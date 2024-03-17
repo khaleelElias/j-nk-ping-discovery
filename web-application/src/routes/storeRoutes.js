@@ -14,7 +14,7 @@ function isAuthenticated(req, res, next) {
   res.redirect('/user/login');
 }
 
-router.get('/', isAuthenticated, storeController.listStores);
+router.get('/', storeController.listStores);
 // router.get('/', (req, res) => {
 //     var model = storeController.listStores(req, res)
 //     console.log("hej", model);
@@ -31,6 +31,16 @@ router.post('/:storeId/favorite', isAuthenticated, (req, res) => {
       return res.status(500).send({ message: err.message });
     } else {
       return res.redirect('/stores'); // Redirect back to stores or to a confirmation page
+    }
+  });
+});
+
+router.get('/api/stores', (req, res) => {
+  storeModel.getAllStores((err, stores) => {
+    if (err) {
+      res.status(500).json({ message: "Error retrieving stores", error: err });
+    } else {
+      res.status(200).json(stores);
     }
   });
 });

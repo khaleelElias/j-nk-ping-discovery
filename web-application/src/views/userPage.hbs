@@ -20,7 +20,6 @@
     {{#each favoriteStores}}
       <li>
         {{this.title}}
-        <!-- Add a form to remove the store from favorites -->
         <form action="/stores/{{this.id}}/unfavorite" method="POST" style="display: inline;">
           <button type="submit">Remove from Favorites</button>
         </form>
