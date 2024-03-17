@@ -17,21 +17,36 @@ exports.listUsers = (req, res) => {
 exports.createUser = (req, res) => {
   const { username, password } = req.body;
 
+  // Check if both fields are provided
   if (!username || !password) {
-    return res.status(400).send({ message: "Username and password are required." });
+    let errors = [];
+    if (!username) errors.push("Username is required.");
+    if (!password) errors.push("Password is required.");
+    return res.status(400).render("createAccount", { errors, username, password });
   }
 
-  userModel.createUser(username, password, (err, message) => {
-    if (err) {
-      res.status(500).render("login", { errors: [ err.message ?? "Internal server error"], username: username, password: password})
+  // Check if user already exists
+  db.query('SELECT * FROM users WHERE username = ?', [username], (error, results) => {
+    if (error) {
+      return res.status(500).render("createAccount", { errors: ["Internal server error"], username, password });
+    }
 
+    if (results.length > 0) {
+      return res.status(400).render("createAccount", { errors: ["Username already exists."], username, password });
     } else {
-      res.redirect('/user/login'); // Redirect to the login page after successful creation
+      // If all checks pass, proceed to create the user
+      userModel.createUser(username, password, (err, message) => {
+        if (err) {
+          return res.status(500).render("createAccount", { errors: [err.message || "Internal server error"], username, password });
+        } else {
+          return res.redirect('/user/login');
+        }
+      });
     }
   });
 };
 
-// userController.js
+
 exports.deleteUser = (req, res) => {
   if (!req.session.user) {
     return res.redirect('/user/login');
@@ -72,33 +87,31 @@ exports.updateUser = (req, res) => {
 
 exports.authenticateUser = (req, res) => {
   const { username, password } = req.body;
-  console.log("Attempting to log in with", username, password);
+
+  if (!username || !password) {
+    return res.status(400).render("login", { errors: ["Username and password are required"], username, password });
+  }
 
   db.query('SELECT * FROM users WHERE username = ?', [username], (error, results) => {
     if (error) {
-      return res.status(500).send({ message: error.message });
+      return res.status(500).render("login", { errors: ["Internal server error"], username, password });
     }
 
     if (results.length > 0) {
       bcrypt.compare(password, results[0].password, (err, isMatch) => {
-        if (err) {
-          console.log(err, "gfdg");
-          return res.status(400).render("login", { errors: [ err.message ?? "Something unexpected happened"], username: username, password:passowrd});
-
+        if (err || !isMatch) {
+          return res.status(401).render("login", { errors: ["Invalid username or password"], username, password });
         }
 
-        if (isMatch) {
-          req.session.user = { id: results[0].id, username: username };
-          return res.redirect('/'); 
-        } else {
-          return res.status(401).send({ message: 'Authentication failed' });
-        }
+        req.session.user = { id: results[0].id, username: username };
+        return res.redirect('/');
       });
     } else {
-      return res.status(404).render("login", { errors: ["Wrong credentials"], username: username, password:password});
+      return res.status(404).render("login", { errors: ["User not found"], username, password });
     }
   });
 };
+
 
 
 

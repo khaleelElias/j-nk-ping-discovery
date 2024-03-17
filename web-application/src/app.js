@@ -9,6 +9,7 @@ const userRoutes = require('./routes/userRoutes');
 const storeRoutes = require('./routes/storeRoutes');
 const aboutRoutes = require('./routes/aboutRoutes');
 const contactRoutes = require('./routes/contactRoutes');
+const storesRoutesAPI = require('./routes/storeRoutesAPI');
 
 const app = express();
 
@@ -43,6 +44,8 @@ app.use('/user', userRoutes);
 app.use('/stores', storeRoutes);
 app.use('/about', aboutRoutes);
 app.use('/contact', contactRoutes);
+app.use('/api/stores', storesRoutesAPI)
+
 
 
 // Root route that renders the index view

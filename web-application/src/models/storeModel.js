@@ -53,4 +53,15 @@ exports.createStore = (callback, newStoreData) => {
       callback(null, 'Store removed from favorites successfully');
     });
   };
+
+  exports.isStoreFavorited = (userId, storeId, callback) => {
+    db.query('SELECT * FROM favorites WHERE user_id = ? AND store_id = ?', [userId, storeId], (error, results) => {
+      if (error) {
+        callback(error, null);
+      } else {
+        const isFavorited = results.length > 0;
+        callback(null, isFavorited);
+      }
+    });
+  };
   

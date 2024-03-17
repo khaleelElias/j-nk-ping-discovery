@@ -1,3 +1,11 @@
+{{#if errors.length}}
+  <div class="notification is-danger">
+    {{#each errors}}
+      <p>{{this}}</p>
+    {{/each}}
+  </div>
+{{/if}}
+
 {{#if stores.length}}
 <div style="display: flex; flex-flow: wrap;">
    {{#each stores}}

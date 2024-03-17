@@ -5,7 +5,6 @@ const storeModel = require('../models/storeModel')
 
 
 
-// Define routes here
 
 function isAuthenticated(req, res, next) {
   if (req.session && req.session.user) {
@@ -15,35 +14,22 @@ function isAuthenticated(req, res, next) {
 }
 
 router.get('/', storeController.listStores);
-// router.get('/', (req, res) => {
-//     var model = storeController.listStores(req, res)
-//     console.log("hej", model);
-//     res.render('stores', {model})
-// });
 
 
-router.post('/:storeId/favorite', isAuthenticated, (req, res) => {
+
+router.post('/:storeId/favorite', isAuthenticated,storeController.toggleFavoriteStore, (req, res) => {
   if (!req.session.user) {
     return res.redirect('/login');
   }
   storeModel.addFavoriteStore(req.session.user.id, req.params.storeId, (err, message) => {
     if (err) {
-      return res.status(500).send({ message: err.message });
+      return res.render('stores', {message: err.message});
     } else {
-      return res.redirect('/stores'); // Redirect back to stores or to a confirmation page
+      return res.redirect('/stores');
     }
   });
 });
 
-router.get('/api/stores', (req, res) => {
-  storeModel.getAllStores((err, stores) => {
-    if (err) {
-      res.status(500).json({ message: "Error retrieving stores", error: err });
-    } else {
-      res.status(200).json(stores);
-    }
-  });
-});
 
 router.post('/:storeId/unfavorite', isAuthenticated, (req, res) => {
   if (!req.session.user) {

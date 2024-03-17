@@ -31,11 +31,11 @@ router.get('/create', (req, res) => {
           console.error("Session destruction error:", err);
           return res.status(500).send('Could not log out.');
         } else {
-          return res.redirect('/login');
+          return res.redirect('/user/login');
         }
       });
     } else {
-      return res.redirect('/login');
+      return res.redirect('/user/login');
     }
   });
 

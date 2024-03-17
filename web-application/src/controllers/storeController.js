@@ -22,7 +22,6 @@ exports.getStore = (req, res) => {
     if (err) {
       res.status(500).send({ message: err.message || "Some error occurred while retrieving the store." });
     } else {
-      // Pass the isLoggedIn status to the view
       res.render("storeDetails", { 
         store: store,
         isLoggedIn: req.session.user ? true : false 
@@ -39,3 +38,38 @@ exports.createStore = (req, res) => {
       }
     });
   };
+
+  exports.toggleFavoriteStore = (req, res) => {
+    const userId = req.session.user.id;
+    const storeId = req.params.storeId;
+  
+    storeModel.isStoreFavorited(userId, storeId, (err, isFavorited) => {
+      if (err) {
+        return res.status(500).render("stores", { errors: ["Internal server error"] });
+      }
+  
+      if (isFavorited) {
+        storeModel.getAllStores((err, stores) => {
+          if (err) {
+            res.status(500).send({ message: err.message || "Some error occurred while retrieving stores." });
+          } else {
+            // Pass the isLoggedIn status to the view
+            res.render("stores", { 
+              errors: ["Store is already in favorites"],
+              stores: stores,
+              isLoggedIn: req.session.user ? true : false 
+            });
+          }
+        })
+      } else {
+        storeModel.addFavoriteStore(userId, storeId, (err, message) => {
+          if (err) {
+            return res.status(500).render("stores", { errors: [err.message || "Internal server error"] });
+          } else {
+            return res.redirect('/stores'); 
+          }
+        });
+      }
+    });
+  };
+  
