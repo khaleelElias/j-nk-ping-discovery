@@ -25,7 +25,7 @@ exports.createUser = (req, res) => {
     if (err) {
       res.status(500).send({ message: err.message || "An error occurred while creating the user." });
     } else {
-      res.redirect('/login'); // Redirect to the login page after successful creation
+      res.redirect('/user/login'); // Redirect to the login page after successful creation
     }
   });
 };
@@ -33,7 +33,7 @@ exports.createUser = (req, res) => {
 // userController.js
 exports.deleteUser = (req, res) => {
   if (!req.session.user) {
-    return res.redirect('/login');
+    return res.redirect('/user/login');
   }
 
   userModel.deleteUser(req.session.user.id, (err, message) => {
@@ -41,7 +41,7 @@ exports.deleteUser = (req, res) => {
       return res.status(500).send({ message: err.message });
     } else {
       req.session.destroy(); // Log the user out after deleting the account
-      return res.redirect('/login');
+      return res.redirect('/user/login');
     }
   });
 };
@@ -49,7 +49,7 @@ exports.deleteUser = (req, res) => {
 
 exports.updateUser = (req, res) => {
   if (!req.session.user) {
-    return res.redirect('/login');  // Redirect to login if not logged in
+    return res.redirect('/user/login');  // Redirect to login if not logged in
   }
 
   const { newUsername, newPassword } = req.body;
@@ -62,7 +62,8 @@ exports.updateUser = (req, res) => {
     if (err) {
       return res.status(500).send({ message: err.message });
     } else {
-      return res.redirect('/userPage'); // Redirect to the user page after update
+      req.session.user=null;
+      return res.redirect('/user/login'); // Redirect to the user page after update
     }
   });
 };

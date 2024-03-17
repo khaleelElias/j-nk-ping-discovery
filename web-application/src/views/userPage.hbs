@@ -2,7 +2,7 @@
 
 <p>Current Username: {{user.username}}</p>
 
-<form action="/update/{{user.id}}" method="POST">
+<form action="/user/update/{{user.id}}" method="POST">
   <label for="username">New Username:</label>
   <input type="text" id="username" name="newUsername" required><br>
   <label for="password">New Password:</label>
@@ -10,6 +10,6 @@
   <button type="submit">Update</button>
 </form>
 
-<form action="/delete/{{user.id}}" method="POST" onsubmit="return confirm('Are you sure you want to delete your account?');">
+<form action="/user/delete/{{user.id}}" method="POST" onsubmit="return confirm('Are you sure you want to delete your account?');">
   <button type="submit">Delete Account</button>
 </form>

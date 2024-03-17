@@ -37,11 +37,9 @@ app.use(express.urlencoded({ extended: true })); // For parsing application/x-ww
 app.use(express.static('public'));
 
 // Importing routes
-const userRoutes = require('./routes/userRoutes');
-const storeRoutes = require('./routes/storeRoutes');
 
 // Using the imported routes
-app.use('/', userRoutes);
+app.use('/user', userRoutes);
 app.use('/stores', storeRoutes);
 app.use('/about', aboutRoutes);
 app.use('/contact', contactRoutes);
