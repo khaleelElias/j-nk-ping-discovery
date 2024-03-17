@@ -5,15 +5,6 @@ const saltRounds = 10;
 
 
 
-exports.getAllUsers = (callback) => {
-  db.query('SELECT * FROM users', (error, results) => {
-    if (error) {
-      callback(error, null);
-      return;
-    }
-    callback(null, results);
-  });
-};
 
 exports.createUser = (username, password, callback) => {
   if (!username || !password) {

@@ -29,15 +29,7 @@ exports.getStore = (req, res) => {
     }
   });
 };
-exports.createStore = (req, res) => {
-    storeModel.createStore((err, stores) => {
-      if (err) {
-        res.status(500).send({ message: err.message || "Some error occurred while retrieving stores." });
-      } else {
-        res.send(stores.id);
-      }
-    });
-  };
+
 
   exports.toggleFavoriteStore = (req, res) => {
     const userId = req.session.user.id;

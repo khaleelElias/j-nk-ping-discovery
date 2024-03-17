@@ -46,12 +46,6 @@ router.post('/:storeId/unfavorite', isAuthenticated, (req, res) => {
 });
 
 
-router.get('/create', storeController.createStore);
-
-router.get('/tete', (req, res) => {
-    res.render('index', { title: 'tetete' });
-  });
-
 router.get('/:title', storeController.getStore);
 
 module.exports = router;

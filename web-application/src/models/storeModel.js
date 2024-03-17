@@ -11,7 +11,6 @@ exports.getAllStores = (callback) => {
 };
 
 exports.getStoreByTitle = (title,callback) => {
-  console.log(title,"this trhis ")
   db.query('SELECT * FROM stores WHERE title = ?', [title], (error, results) => {
     if (error) {
       callback(error, null);
@@ -33,15 +32,6 @@ exports.addFavoriteStore = (userId, storeId, callback) => {
   });
 };
 
-exports.createStore = (callback, newStoreData) => {
-    db.query('INSERT INTO stores SET ?', newStoreData, (error, results) => {
-        if (error) {
-          callback(error, null);
-          return;
-        }
-        callback(null, results.id);
-      });
-  };
 
   exports.removeFavoriteStore = (userId, storeId, callback) => {
     const query = 'DELETE FROM favorites WHERE user_id = ? AND store_id = ?';
