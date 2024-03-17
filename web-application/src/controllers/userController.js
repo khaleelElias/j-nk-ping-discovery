@@ -1,6 +1,8 @@
 // You need to implement userModel.js and its methods
 const userModel = require('../models/userModel');
 const bcrypt = require('bcrypt');
+const db = require("../models/db");
+
 
 exports.listUsers = (req, res) => {
   userModel.getAllUsers((err, users) => {
@@ -23,7 +25,7 @@ exports.createUser = (req, res) => {
     if (err) {
       res.status(500).send({ message: err.message || "An error occurred while creating the user." });
     } else {
-      res.status(201).send({ message });
+      res.redirect('/login'); // Redirect to the login page after successful creation
     }
   });
 };
@@ -58,28 +60,32 @@ exports.updateUser = (req, res) => {
 };
 
 
-exports.authenticateUser = (username, password, callback) => {
+exports.authenticateUser = (req, res) => {
+  const { username, password } = req.body;
+  console.log("Attempting to log in with", username, password);
+
   db.query('SELECT * FROM users WHERE username = ?', [username], (error, results) => {
     if (error) {
-      callback(error, null);
-      return;
+      return res.status(500).send({ message: error.message });
     }
 
     if (results.length > 0) {
       bcrypt.compare(password, results[0].password, (err, isMatch) => {
         if (err) {
-          callback(err, null);
-          return;
+          return res.status(500).send({ message: err.message });
         }
 
         if (isMatch) {
-          callback(null, 'Authentication successful');
+          req.session.user = { id: results[0].id, username: username };
+          return res.redirect('/'); 
         } else {
-          callback(new Error('Authentication failed'), null);
+          return res.status(401).send({ message: 'Authentication failed' });
         }
       });
     } else {
-      callback(new Error('User not found'), null);
+      return res.status(404).send({ message: 'User not found' });
     }
   });
 };
+
+

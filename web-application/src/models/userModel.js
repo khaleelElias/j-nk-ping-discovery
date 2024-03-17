@@ -1,5 +1,6 @@
 const db = require('./db');
 const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 
 
@@ -13,21 +14,24 @@ exports.getAllUsers = (callback) => {
   });
 };
 
-exports.createUser = (req, res) => {
-  const { username, password } = req.body;
-
-  if (!username || !password) {
-    return res.status(400).send({ message: "Username and password are required." });
-  }
-
-  userModel.createUser(username, password, (err, message) => {
+exports.createUser = (username, password, callback) => {
+  bcrypt.hash(password, saltRounds, (err, hash) => {
     if (err) {
-      res.status(500).send({ message: err.message || "An error occurred while creating the user." });
-    } else {
-      res.redirect('/login'); // Redirect to the login page
+      callback(err, null);
+      return;
     }
+
+    // Store the hash in your database
+    db.query('INSERT INTO users (username, password) VALUES (?, ?)', [username, hash], (error, results) => {
+      if (error) {
+        callback(error, null);
+        return;
+      }
+      callback(null, "User created successfully");
+    });
   });
 };
+
 
 
 exports.deleteUser = (userId, callback) => {

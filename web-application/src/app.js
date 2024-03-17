@@ -1,11 +1,8 @@
 const express = require('express');
 const { engine } = require('express-handlebars');
-const app = express();
+const session = require('express-session');
 
-// app.js
-// Importing routes
-const userRoutes = require('./routes/userRoutes');
-const storeRoutes = require('./routes/storeRoutes');
+const app = express();
 
 // Set up Handlebars as the view engine
 app.engine('hbs', engine({
@@ -15,6 +12,14 @@ app.engine('hbs', engine({
 app.set('view engine', 'hbs');
 app.set('views', './views'); // Specify where to find the view files
 
+// Session middleware setup should be here
+app.use(session({
+  secret: 'MySecret',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: 'auto' } // Make sure to set to false if you're not using HTTPS
+}));
+
 // Middleware to parse request bodies
 app.use(express.json()); // For parsing application/json
 app.use(express.urlencoded({ extended: true })); // For parsing application/x-www-form-urlencoded
@@ -22,14 +27,22 @@ app.use(express.urlencoded({ extended: true })); // For parsing application/x-ww
 // Serving static files
 app.use(express.static('public'));
 
+// Importing routes
+const userRoutes = require('./routes/userRoutes');
+const storeRoutes = require('./routes/storeRoutes');
+
 // Using the imported routes
-app.use('/users', userRoutes);
+app.use('/', userRoutes);
 app.use('/stores', storeRoutes);
 
 // Root route that renders the index view
 app.get('/', (req, res) => {
-  res.render('index', { title: 'Hello, World!' });
+  res.render('index', { 
+    title: 'Hello, World!',
+    isLoggedIn: req.session.user ? true : false 
+  });
 });
+
 
 // 404 Error handler
 app.use((req, res) => {
