@@ -139,6 +139,10 @@ body {
   }
 }
 
+#isWhite{
+  color:white !important;
+}
+
 .va {
   display: flex;
   align-items: center;
