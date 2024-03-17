@@ -139,6 +139,10 @@ body {
   }
 }
 
+#isWhite{
+  color:white !important;
+}
+
 .va {
   display: flex;
   align-items: center;
@@ -157,10 +161,6 @@ body {
 footer {
   color: white;
   background: rgb(14, 14, 14) !important;
-  position: fixed;
-   left: 0;
-   bottom: 0;
-   width: 100%;
 }
 
 footer strong {
