@@ -43,7 +43,6 @@ app.use('/user', userRoutes);
 app.use('/stores', storeRoutes);
 app.use('/about', aboutRoutes);
 app.use('/contact', contactRoutes);
-app.use('/', storeRoutes);
 
 
 // Root route that renders the index view
