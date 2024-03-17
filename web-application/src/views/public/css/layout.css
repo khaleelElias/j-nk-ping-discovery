@@ -3,7 +3,7 @@ html {
 }
 
 body {
-    background-color: whitesmoke;
+    background-color: rgb(24, 240, 111);
     min-height: 100%;
 }
 
@@ -12,7 +12,6 @@ body {
 }
 
 div .card {
-    background-color: red;
     margin-top: 10px;
     margin-left: 100px;
     margin-right: 100px;
