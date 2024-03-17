@@ -1,0 +1,31 @@
+  <div class="content">
+	<h1>All Stores</h1>
+	<img src="./public/home-background1.jpg">
+			{{#if stores.length}}
+				{{#each stores}}
+				<a href="/posts/{{name}}">
+					<div class="card">
+						<div class="card-content">
+							<div class="media">
+								<figure class="image is-48x48">
+								<img src="/uploads/{{clubImage}}" alt="Placeholder image">
+								</figure>
+							</div>
+							<p class="title">{{name}}</p>
+						</div>
+					</div>
+					{{/each}}
+			{{/if}}
+
+		
+</div>
+  
+  {{#each stores}}
+    <li>
+      <strong>{{title}}</strong><br>
+      URL: <a href="{{url}}">{{url}}</a><br>
+      District: {{#if district}}{{district}}{{else}}Not specified{{/if}}<br>
+      Content: {{content}}
+    </li>
+  {{/each}}
+</ul>
