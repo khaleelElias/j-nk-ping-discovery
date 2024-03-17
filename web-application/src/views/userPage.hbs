@@ -3,13 +3,30 @@
 <p>Current Username: {{user.username}}</p>
 
 <form action="/user/update/{{user.id}}" method="POST">
-  <label for="username">New Username:</label>
-  <input type="text" id="username" name="newUsername" required><br>
-  <label for="password">New Password:</label>
-  <input type="password" id="password" name="newPassword" required><br>
-  <button type="submit">Update</button>
+   <label for="username">New Username:</label>
+   <input type="text" id="username" name="newUsername" required><br>
+   <label for="password">New Password:</label>
+   <input type="password" id="password" name="newPassword" required><br>
+   <button type="submit">Update</button>
 </form>
 
 <form action="/user/delete/{{user.id}}" method="POST" onsubmit="return confirm('Are you sure you want to delete your account?');">
-  <button type="submit">Delete Account</button>
+   <button type="submit">Delete Account</button>
 </form>
+
+<h2>Favorite Stores</h2>
+{{#if favoriteStores.length}}
+  <ul>
+    {{#each favoriteStores}}
+      <li>
+        {{this.title}}
+        <!-- Add a form to remove the store from favorites -->
+        <form action="/stores/{{this.id}}/unfavorite" method="POST" style="display: inline;">
+          <button type="submit">Remove from Favorites</button>
+        </form>
+      </li>
+    {{/each}}
+  </ul>
+{{else}}
+  <p>You have no favorite stores.</p>
+{{/if}}

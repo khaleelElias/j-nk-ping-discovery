@@ -73,3 +73,16 @@ exports.deleteUser = (userId, callback) => {
   });
 };
 
+exports.getFavoriteStores = (userId, callback) => {
+  const query = `
+    SELECT s.* FROM favorites f
+    JOIN stores s ON f.store_id = s.id
+    WHERE f.user_id = ?`;
+  db.query(query, [userId], (error, results) => {
+    if (error) {
+      callback(error, null);
+      return;
+    }
+    callback(null, results);
+  });
+};
