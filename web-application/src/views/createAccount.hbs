@@ -1,8 +1,34 @@
-<h1>Create Account</h1>
-<form action="/user/create" method="POST">
-  <label for="username">Username:</label>
-  <input type="text" id="username" name="username" required><br>
-  <label for="password">Password:</label>
-  <input type="password" id="password" name="password" required><br>
-  <button type="submit">Create Account</button>
-</form>
+<div class="content">
+	<h2>Create Account</h2>
+	<div class="container">
+		<div class="columns is-centered">
+			<div class="column is-7-desktop is-12-mobile is-7-tablet is-7-widescreen">
+				<form action="/user/create" method="POST" class="box">
+					{{#if errors.length}}
+						<ul>
+							{{#each errors}}
+							<li id="error-text">{{this}}</li>
+							{{/each}}
+						</ul>
+					{{/if}}
+					<div class="field">
+						<label class="label">Username:</label>
+						<input type="text" class="input" name="username" value="{{username}}" required>
+					</div>
+					<div class="field">
+						<label class="label">Password:</label>
+						<input type="password" class="input" name="password" value="{{password}}" required>
+					</div>
+					<div>
+						<input class="button is-success" style="color:black !important;" type="submit" value="Create Account">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+

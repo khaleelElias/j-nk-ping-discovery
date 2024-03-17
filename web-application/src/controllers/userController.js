@@ -23,7 +23,8 @@ exports.createUser = (req, res) => {
 
   userModel.createUser(username, password, (err, message) => {
     if (err) {
-      res.status(500).send({ message: err.message || "An error occurred while creating the user." });
+      res.status(500).render("login", { errors: [ err.message ?? "Internal server error"], username: username, password: password})
+
     } else {
       res.redirect('/user/login'); // Redirect to the login page after successful creation
     }
@@ -81,7 +82,9 @@ exports.authenticateUser = (req, res) => {
     if (results.length > 0) {
       bcrypt.compare(password, results[0].password, (err, isMatch) => {
         if (err) {
-          return res.status(500).send({ message: err.message });
+          console.log(err, "gfdg");
+          return res.status(400).render("login", { errors: [ err.message ?? "Something unexpected happened"], username: username, password:passowrd});
+
         }
 
         if (isMatch) {
@@ -92,7 +95,7 @@ exports.authenticateUser = (req, res) => {
         }
       });
     } else {
-      return res.status(404).send({ message: 'User not found' });
+      return res.status(404).render("login", { errors: ["Wrong credentials"], username: username, password:password});
     }
   });
 };

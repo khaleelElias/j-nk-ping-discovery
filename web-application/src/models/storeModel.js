@@ -17,7 +17,6 @@ exports.getStoreByTitle = (title,callback) => {
       callback(error, null);
       return;
     }
-    console.log(results, "tobbin2");
     callback(null, results[0] ?? null);
     
   });
