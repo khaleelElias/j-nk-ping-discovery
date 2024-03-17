@@ -1,31 +1,47 @@
-  <div class="content">
-	<h1>All Stores</h1>
-	<img src="./public/home-background1.jpg">
-			{{#if stores.length}}
-				{{#each stores}}
-				<a href="/posts/{{name}}">
-					<div class="card">
-						<div class="card-content">
-							<div class="media">
-								<figure class="image is-48x48">
-								<img src="/uploads/{{clubImage}}" alt="Placeholder image">
-								</figure>
-							</div>
-							<p class="title">{{name}}</p>
-						</div>
-					</div>
-					{{/each}}
-			{{/if}}
+{{#if errors.length}}
+  <div class="notification is-danger">
+    {{#each errors}}
+      <p>{{this}}</p>
+    {{/each}}
+  </div>
+{{/if}}
 
-		
+{{#if stores.length}}
+<div style="display: flex; flex-flow: wrap;">
+   {{#each stores}}
+   <section class="section">
+      <div class="container">
+         <div class="columns is-multiline">
+            <div class="column">
+               <div class="card p-1" style="min-width: 300px;">
+                  <a href="/stores/{{title}}">
+                     <div class="card-image mb-4 is-relative">
+                        <img class="image is-fullwidth is-rounded is-cover"
+                             style="height: 155px; object-fit:contain;"
+                             src="/icon/logo.jpg"
+                             alt="Store Image">
+                        <span class="tag is-primary mt-2 mr-2 px-2"
+                              style="position: absolute; top: 0; right: 0; font-size: 12px; ">open</span>
+                     </div>
+                     <div class="card-content">
+                        <div class="content is-flex is-justify-content-space-between is-align-items-center">
+                           <div>
+                              <h3 class="title is-size-6 mb-1">{{title}}</h3>
+                              <span class="subtitle" style="font-size: 12px;">subtitle</span>
+                           </div>
+                           <form action="/stores/{{this.id}}/favorite" method="POST">
+                              <button type="submit" class="button is-primary is-light p-0" style="width: 32px; height: 32px;">
+                                 <i class="fas fa-star"></i>
+                              </button>
+                           </form>
+                        </div>
+                     </div>
+                  </a>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+   {{/each}}
 </div>
-  
-  {{#each stores}}
-    <li>
-      <strong>{{title}}</strong><br>
-      URL: <a href="{{url}}">{{url}}</a><br>
-      District: {{#if district}}{{district}}{{else}}Not specified{{/if}}<br>
-      Content: {{content}}
-    </li>
-  {{/each}}
-</ul>
+{{/if}}
