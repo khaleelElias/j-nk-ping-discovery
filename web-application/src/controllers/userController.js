@@ -4,20 +4,10 @@ const bcrypt = require('bcrypt');
 const db = require("../models/db");
 
 
-exports.listUsers = (req, res) => {
-  userModel.getAllUsers((err, users) => {
-    if (err) {
-      res.status(500).send({ message: err.message || "Some error occurred while retrieving users." });
-    } else {
-      res.send(users);
-    }
-  });
-};
 
 exports.createUser = (req, res) => {
   const { username, password } = req.body;
 
-  // Check if both fields are provided
   if (!username || !password) {
     let errors = [];
     if (!username) errors.push("Username is required.");
@@ -25,7 +15,6 @@ exports.createUser = (req, res) => {
     return res.status(400).render("createAccount", { errors, username, password });
   }
 
-  // Check if user already exists
   db.query('SELECT * FROM users WHERE username = ?', [username], (error, results) => {
     if (error) {
       return res.status(500).render("createAccount", { errors: ["Internal server error"], username, password });
@@ -34,7 +23,6 @@ exports.createUser = (req, res) => {
     if (results.length > 0) {
       return res.status(400).render("createAccount", { errors: ["Username already exists."], username, password });
     } else {
-      // If all checks pass, proceed to create the user
       userModel.createUser(username, password, (err, message) => {
         if (err) {
           return res.status(500).render("createAccount", { errors: [err.message || "Internal server error"], username, password });
@@ -56,7 +44,7 @@ exports.deleteUser = (req, res) => {
     if (err) {
       return res.status(500).send({ message: err.message });
     } else {
-      req.session.destroy(); // Log the user out after deleting the account
+      req.session.destroy(); 
       return res.redirect('/user/login');
     }
   });
@@ -65,7 +53,7 @@ exports.deleteUser = (req, res) => {
 
 exports.updateUser = (req, res) => {
   if (!req.session.user) {
-    return res.redirect('/user/login');  // Redirect to login if not logged in
+    return res.redirect('/user/login');  
   }
 
   const { newUsername, newPassword } = req.body;
@@ -79,7 +67,7 @@ exports.updateUser = (req, res) => {
       return res.status(500).send({ message: err.message });
     } else {
       req.session.user=null;
-      return res.redirect('/user/login'); // Redirect to the user page after update
+      return res.redirect('/user/login'); 
     }
   });
 };
