@@ -44,20 +44,32 @@ exports.deleteUser = (userId, callback) => {
   });
 };
 
-exports.updateUser = (req, res) => {
-  const { userId } = req.params;
-  const { newUsername, newPassword } = req.body;
-
-  if (!newUsername || !newPassword) {
-    return res.status(400).send({ message: "New username and password are required." });
-  }
-
-  userModel.updateUser(userId, newUsername, newPassword, (err, message) => {
+exports.updateUser = (userId, newUsername, newPassword, callback) => {
+  bcrypt.hash(newPassword, saltRounds, (err, hash) => {
     if (err) {
-      res.status(500).send({ message: err.message || "An error occurred while updating the user." });
-    } else {
-      res.redirect('/userPage'); // Redirect to a page showing the user's updated information
+      callback(err, null);
+      return;
     }
+
+    const query = 'UPDATE users SET username = ?, password = ? WHERE id = ?';
+    db.query(query, [newUsername, hash, userId], (error, results) => {
+      if (error) {
+        callback(error, null);
+        return;
+      }
+      callback(null, "User updated successfully");
+    });
+  });
+};
+
+exports.deleteUser = (userId, callback) => {
+  const query = 'DELETE FROM users WHERE id = ?';
+  db.query(query, [userId], (error, results) => {
+    if (error) {
+      callback(error, null);
+      return;
+    }
+    callback(null, 'User deleted successfully');
   });
 };
 

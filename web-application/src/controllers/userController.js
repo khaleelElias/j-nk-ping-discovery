@@ -30,31 +30,39 @@ exports.createUser = (req, res) => {
   });
 };
 
+// userController.js
 exports.deleteUser = (req, res) => {
-  const { userId } = req.params;
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
 
-  userModel.deleteUser(userId, (err, message) => {
+  userModel.deleteUser(req.session.user.id, (err, message) => {
     if (err) {
-      res.status(500).send({ message: err.message || "An error occurred while deleting the user." });
+      return res.status(500).send({ message: err.message });
     } else {
-      res.send({ message });
+      req.session.destroy(); // Log the user out after deleting the account
+      return res.redirect('/login');
     }
   });
 };
 
+
 exports.updateUser = (req, res) => {
-  const { userId } = req.params;
+  if (!req.session.user) {
+    return res.redirect('/login');  // Redirect to login if not logged in
+  }
+
   const { newUsername, newPassword } = req.body;
 
   if (!newUsername || !newPassword) {
     return res.status(400).send({ message: "New username and password are required." });
   }
 
-  userModel.updateUser(userId, newUsername, newPassword, (err, message) => {
+  userModel.updateUser(req.session.user.id, newUsername, newPassword, (err, message) => {
     if (err) {
-      res.status(500).send({ message: err.message || "An error occurred while updating the user." });
+      return res.status(500).send({ message: err.message });
     } else {
-      res.send({ message });
+      return res.redirect('/userPage'); // Redirect to the user page after update
     }
   });
 };

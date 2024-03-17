@@ -38,12 +38,25 @@ router.get('/create', (req, res) => {
       return res.redirect('/login');
     }
   });
+
+  router.get('/userPage', (req, res) => {
+    if (!req.session.user) {
+      return res.redirect('/login');
+    }
+    res.render('userPage', {
+      isLoggedIn: true,
+      user: req.session.user
+    });
+  });
   
   router.post('/create', userController.createUser);
   
   router.post('/login', userController.authenticateUser);
 
   router.post('/update/:userId', userController.updateUser);
+
+  router.post('/delete/:userId', userController.deleteUser);
+
   
 
 module.exports = router;
