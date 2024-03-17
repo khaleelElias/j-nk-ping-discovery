@@ -6,6 +6,9 @@ const app = express();
 // Importing routes
 const userRoutes = require('./routes/userRoutes');
 const storeRoutes = require('./routes/storeRoutes');
+const aboutRoutes = require('./routes/aboutRoutes');
+const contactRoutes = require('./routes/contactRoutes');
+
 
 // Set up Handlebars as the view engine
 app.engine('hbs', engine({
@@ -25,6 +28,9 @@ app.use(express.static('public'));
 // Using the imported routes
 app.use('/users', userRoutes);
 app.use('/stores', storeRoutes);
+app.use('/about', aboutRoutes);
+app.use('/contact', contactRoutes);
+
 
 // Root route that renders the index view
 app.get('/', (req, res) => {
