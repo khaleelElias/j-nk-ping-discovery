@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
-
+const userModel = require('../models/userModel')
 
 
 router.get('/create', (req, res) => {
@@ -41,13 +41,21 @@ router.get('/create', (req, res) => {
 
   router.get('/userPage', (req, res) => {
     if (!req.session.user) {
-      return res.redirect('/login');
+        return res.redirect('/user/login');
     }
-    res.render('userPage', {
-      isLoggedIn: true,
-      user: req.session.user
+
+    userModel.getFavoriteStores(req.session.user.id, (err, favoriteStores) => {
+        if (err) {
+            return res.status(500).send({ message: err.message });
+        }
+
+        res.render('userPage', {
+            isLoggedIn: true,
+            user: req.session.user,
+            favoriteStores: favoriteStores // Pass the favorite stores to the template
+        });
     });
-  });
+});
   
   router.post('/create', userController.createUser);
   

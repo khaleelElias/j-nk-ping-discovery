@@ -1,17 +1,53 @@
 const express = require('express');
 const router = express.Router();
 const storeController = require('../controllers/storeController');
+const storeModel = require('../models/storeModel')
+
 
 
 // Define routes here
 
+function isAuthenticated(req, res, next) {
+  if (req.session && req.session.user) {
+    return next();
+  }
+  res.redirect('/user/login');
+}
 
-router.get('/', storeController.listStores);
+router.get('/', isAuthenticated, storeController.listStores);
 // router.get('/', (req, res) => {
 //     var model = storeController.listStores(req, res)
 //     console.log("hej", model);
 //     res.render('stores', {model})
 // });
+
+
+router.post('/:storeId/favorite', isAuthenticated, (req, res) => {
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+  storeModel.addFavoriteStore(req.session.user.id, req.params.storeId, (err, message) => {
+    if (err) {
+      return res.status(500).send({ message: err.message });
+    } else {
+      return res.redirect('/stores'); // Redirect back to stores or to a confirmation page
+    }
+  });
+});
+
+router.post('/:storeId/unfavorite', isAuthenticated, (req, res) => {
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  storeModel.removeFavoriteStore(req.session.user.id, req.params.storeId, (err, message) => {
+    if (err) {
+      return res.status(500).send({ message: err.message });
+    } else {
+      return res.redirect('/user/userPage'); // Redirect back to the user page or a confirmation page
+    }
+  });
+});
 
 
 router.get('/create', storeController.createStore);
