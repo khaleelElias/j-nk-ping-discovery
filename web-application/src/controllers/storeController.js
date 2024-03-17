@@ -13,6 +13,16 @@ exports.listStores = (req, res) => {
   });
 };
 
+exports.getStore = (req, res) => {
+  storeModel.getStoreByTitle(req.params.title,(err, store) => {
+    if (err) {
+      res.status(500).send({ message: err.message || "Some error occurred while retrieving stores." });
+    } else {
+      res.render("storeDetails",{ store });
+    }
+  });
+};
+
 exports.createStore = (req, res) => {
     storeModel.createStore((err, stores) => {
       if (err) {
@@ -22,25 +32,3 @@ exports.createStore = (req, res) => {
       }
     });
   };
-// module.exports = function({ storeModel }) {
-
-//     const exports = {}
-
-//     exports.getAllStores = function(callback) {
-//         console.log("this happend ");
-//         storeModel.getAllStores(callback)
-//     }
-
-//     exports.createStore = function(store, callback) {
-
-        
-//         storeModel.createStore(store, callback)
-
-//     }
-
-//     exports.getStoreByName = function(name, callback) {
-//         storeModel.getStoreByName(name, callback)
-//     }
-
-//     return exports
-// }
